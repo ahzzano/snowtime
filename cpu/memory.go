@@ -1,5 +1,8 @@
 package cpu
 
+/*
+Memory handles the memory needed for the 6502
+*/
 type Memory struct {
 	contents [65536]uint8 // the contents of our memory
 }
@@ -33,7 +36,6 @@ func (m *Memory) Read16(addr uint16) uint16 {
 }
 
 func (m *Memory) Read16Alt(hi, lo uint16) uint16 {
-
 	hi_value := uint16(m.contents[hi]) << 8
 	lo_value := uint16(m.contents[lo])
 	return hi_value | lo_value
