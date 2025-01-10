@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"runtime"
 	"snowtime/gfx"
 
@@ -17,6 +18,7 @@ func main() {
 	defer glfw.Terminate()
 
 	for !window.ShouldClose() {
+		log.Println("Hello World")
 		draw(window, program)
 	}
 }
