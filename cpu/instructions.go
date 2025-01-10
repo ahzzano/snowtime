@@ -38,42 +38,70 @@ const (
 )
 
 func (s *CPU) ADC(addrm addressing_mode) {
-	if addrm == immediate {
+	switch addrm {
+	case immediate:
 		target_addr := s.pc + 1
 		s.acc = s.acc + s.getCarry() + s.mem.Read(target_addr)
 		s.pc += 2
-	} else if addrm == zeropage {
+		break
+	case zeropage:
 		target_addr := uint16(s.mem.Read(s.pc+1) & 0xFF)
 		s.acc = s.acc + s.getCarry() + s.mem.Read(target_addr)
 		s.pc += 2
-	} else if addrm == zeropage_x {
+		break
+	case zeropage_x:
 		target_addr := (uint16(s.x) + s.pc + 1) & 0xFF
 		s.acc = s.acc + s.getCarry() + s.mem.Read(target_addr)
 		s.pc += 2
-	} else if addrm == absolute {
+		break
+	case absolute:
 		target_addr := s.mem.Read16Alt(s.pc+2, s.pc+1)
 		s.acc = s.acc + s.getCarry() + s.mem.Read(target_addr)
 		s.pc += 3
-	} else if addrm == absolute_x {
+		break
+	case absolute_x:
 		target_addr := s.mem.Read16Alt(s.pc+2+uint16(s.x),
 			s.pc+1+uint16(s.x))
 		s.acc += s.getCarry() + s.mem.Read(target_addr)
 		s.pc += 3
-	} else if addrm == absolute_y {
+		break
+	case absolute_y:
 		target_addr := s.mem.Read16Alt(s.pc+2+uint16(s.y),
 			s.pc+1+uint16(s.y))
 		s.acc += s.getCarry() + s.mem.Read(target_addr)
 		s.pc += 3
-	} else if addrm == indexed_indirect {
+		break
+	case indexed_indirect:
 		target_addr := (uint16(s.x) + s.pc + 1) & 0xFF
 		target_addr = s.mem.Read16(target_addr)
 		s.acc = s.acc + s.getCarry() + s.mem.Read(target_addr)
 		s.pc += 2
-	} else if addrm == indirect_indexed {
+		break
+	case indirect_indexed:
 		target_addr := (uint16(s.y) + s.pc + 1) & 0xFF
 		s.acc = s.acc + s.getCarry() + s.mem.Read(target_addr)
 		s.pc += 2
-	} else {
-		fmt.Errorf("This is currently unimplemented")
+		break
+	}
+}
+
+func (s *CPU) AND(addrm addressing_mode) {
+	switch addrm {
+	case immediate:
+		s.acc = s.acc & s.mem.Read(s.pc+1)
+		s.pc += 2
+		break
+	case zeropage:
+		target_addr := uint16(s.mem.Read(s.pc+1) & 0xFF)
+		s.acc = s.acc & s.mem.Read(target_addr)
+		break
+	case zeropage_x:
+		target_addr := (uint16(s.x) + s.pc + 1) & 0xFF
+		s.acc = s.acc & s.mem.Read(target_addr)
+		break
+	case zeropage_y:
+		target_addr := (uint16(s.y) + s.pc + 1) & 0xFF
+		s.acc = s.acc & s.mem.Read(target_addr)
+		break
 	}
 }
